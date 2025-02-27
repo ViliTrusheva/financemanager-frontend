@@ -10,16 +10,17 @@ interface CategoriesEntity {
 }
 
 export default function Home() {
-  const [categoriesScreens, setCategoriesScreens] = useState<CategoriesEntity[]>([]);
-  const [categoryScreen, setCategory] = useState<string>("");
+  const [categories, setCategories] = useState<CategoriesEntity[]>([]);
+  const [newCategory, setNewCategory] = useState<string>("");
 
-  const addCategory = useCallback(() => {
-    if (categoryScreen.trim() === "") return; // Prevent adding empty categories
+  const handleAddCategory = useCallback(() => {
+    if (newCategory.trim() === "") return; // Prevent adding empty categories
 
-    const newCategoriesScreen = new CategoriesEntity(categoriesScreens.length, categoryScreen);
-    setCategoriesScreens([...categoriesScreens, newCategoriesScreen]);
-    setCategory(""); // Clear the input field
-  }, [categoriesScreens, categoryScreen]);
+    const newCategoriesScreen = new CategoriesEntity(categories.length, newCategory);
+    setCategories([...categories, newCategoriesScreen]);
+
+    setNewCategory(""); // Clear the input field
+  }, [newCategory]);
 
   const renderItem = useCallback(
     ({ item }: { item: CategoriesEntity }) => <Text style={styles.item}>• {item.title}</Text>,
@@ -28,27 +29,28 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
-      <Input>
-        <InputSlot className="pl-3">
+      <View style={styles.inputContainer}>
+        <Input>
           <InputField
-            onChangeText={setCategory}
-            value={categoryScreen}
+            onChangeText={setNewCategory}
+            value={newCategory}
             placeholder="Write..."
             keyboardType="default"
+            onSubmitEditing={handleAddCategory} // Executes when "Enter" is pressed
           />
-        </InputSlot>
-      </Input>
+        </Input>
 
-      <Button className="ml-auto" onPress={addCategory}>
-        <ButtonText className="text-typography-0">Add</ButtonText>
-      </Button>
+        <Button onPress={handleAddCategory}>
+          <ButtonText>Add</ButtonText>
+        </Button>
 
-      <FlatList
-        data={categoriesScreens}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderItem}
-        contentContainerStyle={styles.list}
-      />
+        <FlatList
+          data={categories}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderItem}
+          contentContainerStyle={styles.list}
+        />
+      </View>
     </View>
   );
 }
@@ -57,18 +59,37 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
+    padding: 20,
   },
+  inputContainer: {
+    position: "absolute",
+    flexDirection: "column", // Ensures input and button are aligned in a row
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "80%",
+    marginVertical: 3,
+  },
+
   item: {
     padding: 10,
-    marginVertical: 5,
-    backgroundColor: "#f9c2ff",
+    marginVertical: 3,
+    backgroundColor: "#fff",
     borderRadius: 5,
     width: "100%",
     alignItems: "center",
   },
   list: {
+    flexGrow: 1,
+    width: "100%",
+  },
+  listItem: {
+    backgroundColor: "#e0e0e0", // Light gray background
+    padding: 12,
+    marginVertical: 5,
+    borderRadius: 5,
+    alignItems: "center",
     width: "100%",
   },
 });
