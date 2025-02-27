@@ -14,9 +14,11 @@ export default function Home() {
   const [categoryScreen, setCategory] = useState<string>("");
 
   const addCategory = useCallback(() => {
+    if (categoryScreen.trim() === "") return; // Prevent adding empty categories
+
     const newCategoriesScreen = new CategoriesEntity(categoriesScreens.length, categoryScreen);
     setCategoriesScreens([...categoriesScreens, newCategoriesScreen]);
-    console.log(categoriesScreens);
+    setCategory(""); // Clear the input field
   }, [categoriesScreens, categoryScreen]);
 
   const renderItem = useCallback(
