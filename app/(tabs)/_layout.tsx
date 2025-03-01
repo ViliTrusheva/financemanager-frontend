@@ -19,7 +19,7 @@ export default function TabLayout() {
         options={{
           title: "Categories",
           tabBarIcon: ({ color, size }: { color: string; size: number }) => (
-            <Ionicons name="home" size={size} color={color} />
+            <Ionicons name="add-sharp" size={size} color={color} />
           ),
         }}
       />

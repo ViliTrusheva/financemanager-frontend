@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { View, Text, FlatList, StyleSheet } from "react-native";
+import { View, Text, FlatList, StyleSheet, SafeAreaView } from "react-native";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Input, InputField, InputSlot } from "@/components/ui/input";
 import { CategoriesEntity } from "../CategoriesEntity";
@@ -28,7 +28,7 @@ export default function Home() {
   );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.inputContainer}>
         <Input>
           <InputField
@@ -51,7 +51,7 @@ export default function Home() {
           contentContainerStyle={styles.list}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     position: "absolute",
-    flexDirection: "column", // Ensures input and button are aligned in a row
+    flexDirection: "column", // Ensures input and button are aligned in a column
     alignItems: "center",
     justifyContent: "space-between",
     width: "80%",
