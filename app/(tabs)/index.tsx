@@ -1,7 +1,16 @@
 import React, { useState, useCallback } from "react";
-import { View, Text, FlatList, StyleSheet, SafeAreaView } from "react-native";
-import { Button, ButtonText } from "@/components/ui/button";
-import { Input, InputField, InputSlot } from "@/components/ui/input";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  SafeAreaView,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
+import { Button, ButtonIcon } from "@/components/ui/button";
+import { Input, InputField } from "@/components/ui/input";
+import { MaterialIcons } from "@expo/vector-icons";
 import { CategoriesEntity } from "../CategoriesEntity";
 
 interface CategoriesEntity {
@@ -17,41 +26,52 @@ export default function Home() {
     if (newCategory.trim() === "") return; // Prevent adding empty categories
 
     const newCategoriesScreen = new CategoriesEntity(categories.length, newCategory);
-    setCategories([...categories, newCategoriesScreen]);
+    setCategories([newCategoriesScreen, ...categories]); // Add new item at the top
 
-    setNewCategory(""); // Clear the input field
-  }, [newCategory]);
+    setNewCategory(""); // Clear input field
+  }, [newCategory, categories]);
 
   const renderItem = useCallback(
-    ({ item }: { item: CategoriesEntity }) => <Text style={styles.item}>• {item.title}</Text>,
+    ({ item }: { item: CategoriesEntity }) => (
+      <View style={styles.listItem}>
+        <Text style={styles.itemText}>{item.title}</Text>
+      </View>
+    ),
     []
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.inputContainer}>
-        <Input>
-          <InputField
-            onChangeText={setNewCategory}
-            value={newCategory}
-            placeholder="Write..."
-            keyboardType="default"
-            onSubmitEditing={handleAddCategory} // Executes when "Enter" is pressed
-          />
-        </Input>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.inputContainer}>
+          <Input style={styles.input}>
+            <InputField
+              onChangeText={setNewCategory}
+              value={newCategory}
+              placeholder="Enter category..."
+              keyboardType="default"
+              onSubmitEditing={handleAddCategory} // Executes when "Enter" is pressed
+              returnKeyType="done" // Changes the "Enter" key to "Done"
+            />
+          </Input>
 
-        <Button onPress={handleAddCategory}>
-          <ButtonText>Add</ButtonText>
-        </Button>
+          <Button onPress={handleAddCategory}>
+            <ButtonIcon as={() => <MaterialIcons name="add" size={24} color="white" />} />
+          </Button>
+        </View>
 
-        <FlatList
-          data={categories}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={renderItem}
-          contentContainerStyle={styles.list}
-        />
-      </View>
-    </SafeAreaView>
+        <View style={styles.list}>
+          <View style={styles.listItem}>
+            <FlatList
+              data={categories}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={renderItem}
+              contentContainerStyle={styles.list}
+            />
+          </View>
+        </View>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -59,37 +79,37 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    justifyContent: "flex-start",
-    alignItems: "center",
     padding: 20,
   },
   inputContainer: {
-    position: "absolute",
-    flexDirection: "column", // Ensures input and button are aligned in a column
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    width: "80%",
-    marginVertical: 3,
+    padding: 0,
+    margin: 4,
+    borderRadius: 8,
+  },
+  input: {
+    flex: 1, // Takes full width except button space
+    marginRight: 6,
+    backgroundColor: "#fff",
   },
 
-  item: {
-    padding: 10,
-    marginVertical: 3,
-    backgroundColor: "#fff",
-    borderRadius: 5,
-    width: "100%",
-    alignItems: "center",
-  },
   list: {
     flexGrow: 1,
-    width: "100%",
+    // width: "100%",
   },
   listItem: {
     backgroundColor: "#e0e0e0", // Light gray background
-    padding: 12,
+    padding: 10,
     marginVertical: 5,
     borderRadius: 5,
     alignItems: "center",
-    width: "100%",
+    // width: "100%",
+  },
+  itemText: {
+    fontSize: 16,
+    color: "#333",
+    fontWeight: "500",
   },
 });
