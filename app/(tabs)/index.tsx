@@ -11,15 +11,15 @@ import {
 import { Button, ButtonIcon } from "@/components/ui/button";
 import { Input, InputField } from "@/components/ui/input";
 import { MaterialIcons } from "@expo/vector-icons";
-import { CategoriesEntity } from "../CategoriesEntity";
+import { CategoriesEntity } from "../../categories/CategoriesEntity";
 
-interface CategoriesEntity {
+interface Category {
   id: number;
   title: string;
 }
 
 export default function Home() {
-  const [categories, setCategories] = useState<CategoriesEntity[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [newCategory, setNewCategory] = useState<string>("");
 
   const handleAddCategory = useCallback(() => {
@@ -32,7 +32,7 @@ export default function Home() {
   }, [newCategory, categories]);
 
   const renderItem = useCallback(
-    ({ item }: { item: CategoriesEntity }) => (
+    ({ item }: { item: Category }) => (
       <View style={styles.listItem}>
         <Text style={styles.itemText}>{item.title}</Text>
       </View>
